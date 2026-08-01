@@ -1,4 +1,4 @@
-## Repositiory in Process of Being Moved
+## Repositiory in Process of Being Moved and Updated
 
 # `--- Bartering ---`
 ## Item Bartering Application

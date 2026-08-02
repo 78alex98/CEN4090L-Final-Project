@@ -1,0 +1,122 @@
+# Web API Project
+
+## Structure
+
+The API uses ASP.NET Core.
+
+`Bartering.Core` contains the core components of the ASP.NET Core server, including the controllers and services.
+
+`Bartering.Data` contains components pertaining to data and persistence, including the database context and models representing the entities and relations.
+
+
+## Dependencies and Nuget Packages Used
+- .NET SDK (>= 9.0)
+  - *Should include the required .NET runtimes and tools.*
+- Microsoft.AspNetCore.OpenApi (9.0.0)
+- Microsoft.EntityFrameworkCore.Design (9.0.2)
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore (9.0.2)
+- Microsoft.AspNetCore.Authentication.JwtBearer (9.0.2)
+- Npgsql.EntityFrameworkCore.PostgreSQL (9.0.4)
+- EFCore.NamingConventions (9.0.0)
+  - *This is used to configure the names of the generated table and column names to follow PostgreSQL naming conventions to avoid the need for double quotes when using SQL directly as PostgreSQL is case-sensitive and will automatically convert unquoted identifiers to lowercase.*
+- Scalar.AspNetCore (2.0.22)
+  - *To render OpenAPI documents to give a convenient interface for the API. This is similar to Swashbuckle.AspNetCore.Swagger.*
+
+To set up the database, it is recommended that you use Docker with Docker Compose. See the sections below for setting up the database. This document refers to the docker CLI. If you are using the Docker Desktop application, refer to other resources such as Docker's documentation for how to do the described actions.
+
+
+## Using Docker
+The `compose.yaml` file is configured to be able to run both the ASP.NET project and the Postgres database in separate Docker containers.
+
+>[!IMPORTANT]
+>The API is currently configured to try and automatically apply the latest migration upon startup, creating the database if it does not already exist (see [Automatic Migrations](#automatic-migrations)). If it does not successfully apply the migration, manual intervention may be required. Refer to the sections under [Setting Up the Database](#setting-up-the-database).
+
+
+>[!NOTE]
+>When you run the server this way, it may output the URL as `http://[::]:8080`. Attempting to access the API through this will likely not work. Refer to step 3 in the instructions below for what to use.
+
+1. Navigate to `Bartering.Api/`
+2. Run `docker compose up` to pull the images, build the containers, and start the services
+   - If you made changes to the project source files, you may need to use `docker compose up --build` to rebuild the ASP.NET image to include the changes
+3. (Optional) In a browser, navigate to either http://localhost:5096/Scalar/ or http://0.0.0.0:5096/Scalar/ to use Scalar
+4. *Ctrl + C* to exit
+5. Run `docker compose down` to stop and remove the containers and network
+
+The compose.yaml has it configured such that a separate volume will be created and mounted so that the database will persist between containers. You can use `docker volume ls` to see the list of volumes and `docker volume rm <volume>` to remove a volume.
+
+
+## Starting the ASP.NET Server Without Docker
+If you choose to not use Docker to run a container of the API, then you will need to install the .NET SDK as listed under the [prior Dependencies section](#dependencies-and-nuget-packages-used). It is recommended that you use an IDE like Visual Studio or JetBrains Rider to run the API project.
+
+### Using the CLI
+If you do not use an IDE, then this section will briefly describe how you can run the API via the command line.
+
+1. Navigate to `Bartering.Api/`
+2. Run `dotnet restore` to restore dependencies
+3. Run `dotnet run --project Bartering.Core` to run the API
+4. (Optional) In a browser, navigate to either http://localhost:5096/Scalar/ or http://0.0.0.0:5096/Scalar/ to use Scalar
+   - Note: Normally if you run it via an IDE, it should respect the launch settings and automatically launch Scalar in the browser, but this is apparently not the case with `dotnet run`. However, `dotnet watch run --project Bartering.Core` may automatically launch it.
+
+
+### Setting Up the Database
+The project is configured to use a PostgreSQL database with Entity Framework. It is currently configured to try and automatically apply the latest migration upon startup. For this to work, the database will need to be running before launching the API (refer to [Starting the DBMS](#starting-the-dbms) or [Without Docker](#without-docker--configuring-the-connectionstring)). Otherwise, you can follow the sections below for installing and using `dotnet-ef` to handle migrations as well as working with the database container.
+
+>[!NOTE]
+>To change or disable the automatic migration, see [Automatic Migrations](#automatic-migrations)
+
+
+#### Prerequisites
+To use Entity Framework, you will need to make sure you have the `dotnet-ef` tool installed:
+- `dotnet tool install --global dotnet-ef`
+
+Refer to Microsoft's documentation for more information: https://learn.microsoft.com/en-us/ef/core/cli/dotnet
+
+If needed, a migration can be generated by first navigating to `Bartering.Api/`, where the solution file is located. From here, run :
+- `dotnet ef migrations add <migration_name> --project Bartering.Data --startup-project Bartering.Core`
+
+This should add a migration under `Bartering.Api/Bartering.Data/Migrations/`. 
+
+
+#### Starting the DBMS
+There is a Docker `compose.yaml` file under `Bartering.Api/`. While in this directory, run `docker compose up db` to pull the postgres image and start a container with the database. Use `docker compose down` when you are done to stop and remove the container and network. If you need to access the database directly, try running `docker exec -it bartering-db psql -U postgres`.
+
+>[!NOTE]
+>The compose.yaml has it configured such that a separate volume will be created and mounted so that the database will persist between containers. You can use `docker volume ls` to see the list of volumes and `docker volume rm <volume>` to remove a volume.
+
+
+#### Creating the Database
+To have EF connect to and create/update the database, navigate to `Bartering.Api/` and run:
+- `dotnet ef database update --project Bartering.Data --startup-project Bartering.Core`
+
+This should use the latest migration to update the database or create it if it does not already exist.
+
+
+####  Without Docker / Configuring the ConnectionString
+If you are not using Docker, please refer to other resources such as Postgres' documentation for how to install and set up Postgres.
+In cases like this, you may need to modify the connection string for the server to connect. The configuration for this can be found in `Bartering.Api/Bartering.Core/appsettings.Development.json` (or `Bartering.Api/Bartering.Core/appsettings.json`). Modify the `BarteringContext` value here as needed. 
+
+If the `BarteringContext` key is not present, then add it to `ConnectionStrings` like below:
+```json
+{
+"ConnectionStrings": {
+    "BarteringContext": "Host=localhost;Port=5432;Database=bartering;Username=postgres;Password=postgres"
+  },
+}
+```
+
+Refer to the documentation for Npgsql/Postgres for connection strings: https://www.npgsql.org/doc/connection-string-parameters.html
+
+
+## Miscellaneous
+### Automatic Migrations
+
+The API is configured to try and automatically apply the latest migration upon startup, creating the database if it does not already exist.
+
+To disable the automatic migration, go to `Bartering.Api/Bartering.Core/Program.cs` and comment out `app.ApplyMigration();`. You can also pass the name of a migration to this function to specify a migration instead of applying the latest.
+```csharp
+if (app.Environment.IsDevelopment())
+{
+    // ...
+    app.ApplyMigration();
+}
+```

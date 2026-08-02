@@ -1,0 +1,12 @@
+*
+
+# Ignore everything except the directories and files below.
+!Bartering.Core/
+!Bartering.Data/
+!Bartering.Tests.Integration/
+!Bartering.Api.sln
+
+# These need to be specified after the above exceptions to make sure the dotnet restore output is not overwritten/wiped 
+#   by the COPY step before the dotnet build step.
+**/bin
+**/obj

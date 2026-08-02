@@ -1,0 +1,20 @@
+@Bartering_HostAddress = http://localhost:5096
+
+POST {{Bartering_HostAddress}}/Authentication/register/
+Content-Type: application/json
+Accept: application/json
+
+{
+    "userName": "johndoe",
+    "password": "1Password!",
+    "firstName": "John",
+    "lastName": "Doe"
+}
+
+###
+
+POST {{Bartering_HostAddress}}/Authentication/refresh/
+Content-Type: application/json
+Accept: application/json
+
+###

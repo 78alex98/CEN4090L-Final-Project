@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bartering.Core", "Bartering.Core\Bartering.Core.csproj", "{67A25D7A-D7AF-4039-9C75-1D3ED57025C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bartering.Data", "Bartering.Data\Bartering.Data.csproj", "{8E2430F1-842D-4116-B7C3-C4412CEAC2FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bartering.Tests.Integration", "Bartering.Tests.Integration\Bartering.Tests.Integration.csproj", "{666C3058-CA61-4631-804A-702F48C1D2C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67A25D7A-D7AF-4039-9C75-1D3ED57025C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A25D7A-D7AF-4039-9C75-1D3ED57025C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A25D7A-D7AF-4039-9C75-1D3ED57025C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A25D7A-D7AF-4039-9C75-1D3ED57025C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E2430F1-842D-4116-B7C3-C4412CEAC2FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E2430F1-842D-4116-B7C3-C4412CEAC2FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E2430F1-842D-4116-B7C3-C4412CEAC2FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E2430F1-842D-4116-B7C3-C4412CEAC2FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{666C3058-CA61-4631-804A-702F48C1D2C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{666C3058-CA61-4631-804A-702F48C1D2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{666C3058-CA61-4631-804A-702F48C1D2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{666C3058-CA61-4631-804A-702F48C1D2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

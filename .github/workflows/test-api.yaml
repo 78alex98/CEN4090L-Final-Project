@@ -1,0 +1,47 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - '**.cs'
+    - '**.csproj'
+  pull_request:
+    branches: [ main ]
+    paths:
+    - '**.cs'
+    - '**.csproj'
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    env:
+      API_SOLUTION: ./api/src/Bartering.Api/
+      CORE_PROJECT: ./api/src/Bartering.Api/Bartering.Core
+      DATA_PROJECT: ./api/src/Bartering.Api/Bartering.Data
+      INTEGRATION_PROJECT: ./api/src/Bartering.Api/Bartering.Tests.Integration
+      
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          cache: true
+          cache-dependency-path: |
+            ${{ env.CORE_PROJECT }}/packages.lock.json
+            ${{ env.DATA_PROJECT }}/packages.lock.json
+            ${{ env.INTEGRATION_PROJECT }}/packages.lock.json
+
+      - name: Restore API dependencies
+        run: dotnet restore --locked-mode
+        working-directory: ${{ env.API_SOLUTION }}
+      - name: Build API
+        run: dotnet build --no-restore
+        working-directory: ${{ env.API_SOLUTION }}
+      - name: Run API tests
+        run: dotnet test --no-build --verbosity normal
+        working-directory: ${{ env.API_SOLUTION }}
+

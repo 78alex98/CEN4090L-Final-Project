@@ -1,6 +1,8 @@
 # `--- Bartering ---`
 ## Item Bartering Application
 
+*Software Engineering Lab Final Group Project*
+
 Users fill up their "inventory" by uploading photos and item descriptions for things they are willing to trade. They are then able to create a bid listing for any item in their inventory. Bid listings are displayed publicly for all other users to see. Other users are able to bid on publicly listed items using one of their own items. 
 
 The bid listing owner can look through all the bids, selecting the best one. The user whose bid got selected gets his item swapped with the one in the listing.
